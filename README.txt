@@ -1,6 +1,6 @@
 Minetest mod "Pyramids"
 =======================
-version: 0.2 Beta
+version: 0.3 Beta
 
 License of source code and textures: WTFPL
 ------------------------------------------
@@ -10,6 +10,15 @@ License of source code and textures: WTFPL
 License of mesh model: WTFPL
 ----------------------------
 (c) Copyright Pavel_S (2013)
+
+
+License of textures
+-------------------
+-pyramids_eye.png by bas080, CC-BY-SA 3.0
+-pyramids_men.png by bas080, CC-BY-SA 3.0
+-pyramids_sun.png by bas080, CC-BY-SA 3.0
+
+all other: BlockMen, WTFPL
 
 
 Licenses of sounds

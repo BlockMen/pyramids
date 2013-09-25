@@ -1,4 +1,4 @@
-pyramids = {}
+--pyramids = {}
 
 walk_limit = 1
 chillaxin_speed = 1
