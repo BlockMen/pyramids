@@ -86,20 +86,33 @@ local function make(pos)
 		for iz=iy,22-iy,1 do
 		if iy <1 then underground({x=pos.x+ix,y=pos.y,z=pos.z+iz}) end
 		 minetest.set_node({x=pos.x+ix,y=pos.y+iy,z=pos.z+iz}, {name="default:sandstonebrick"})
+		for yy=1,10-iy,1 do
+		local n = minetest.get_node({x=pos.x+ix,y=pos.y+iy+yy,z=pos.z+iz})
+		 if n and n.name and n.name == "default:desert_stone" then minetest.set_node({x=pos.x+ix,y=pos.y+iy+yy,z=pos.z+iz},{name="default:desert_sand"}) end
+		end
 		end	
 	end
  end
 
  pyramids.make_room(pos)
+ minetest.after(2, pyramids.make_traps, pos)
  add_spawner({x=pos.x+11,y=pos.y+2, z=pos.z+17})
- make_entrance(pos)
+ make_entrance({x=pos.x,y=pos.y, z=pos.z})
 end
 
 local perl1 = {SEED1 = 9130, OCTA1 = 3,	PERS1 = 0.5, SCAL1 = 250} -- Values should match minetest mapgen V6 desert noise.
 
+local function hlp_fnct(pos, name)
+	local n = minetest.get_node_or_nil(pos)
+	if n and n.name and n.name == name then
+		return true
+	else
+		return false
+	end
+end
 local function ground(pos, old)
 	local p2 = pos
-	while minetest.get_node_or_nil(p2).name == "air" do
+	while hlp_fnct(p2, "air") do
 		p2.y = p2.y -1
 	end
 	if p2.y < old.y then
@@ -134,23 +147,23 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		local opos1 = {x=p2.x+22,y=p2.y-1,z=p2.z+22}
 		local opos2 = {x=p2.x+22,y=p2.y-1,z=p2.z}
 		local opos3 = {x=p2.x,y=p2.y-1,z=p2.z+22}
-		local opos1_n = minetest.get_node(opos1).name
-		local opos2_n = minetest.get_node(opos2).name
-		local opos3_n = minetest.get_node(opos3).name
-		if opos1_n == "air" then
+		local opos1_n = minetest.get_node_or_nil(opos1)
+		local opos2_n = minetest.get_node_or_nil(opos2)
+		local opos3_n = minetest.get_node_or_nil(opos3)
+		if opos1_n and opos1_n.name and opos1_n.name == "air" then
 			p2 = ground(opos1, p2)
 		end
-		if opos2_n == "air" then
+		if opos2_n and opos2_n.name and opos2_n.name == "air" then
 			p2 = ground(opos2, p2)
 		end
-		if opos3_n == "air" then
+		if opos3_n and opos3_n.name and opos3_n.name == "air" then
 			p2 = ground(opos3, p2)
 		end
-		p2.y = p2.y - 4
+		p2.y = p2.y - 3
 		if p2.y < 0 then p2.y = 0 end
 		if minetest.find_node_near(p2, 25, {"default:water_source"}) ~= nil or minetest.find_node_near(p2, 22, {"default:dirt_with_grass"}) ~= nil or minetest.find_node_near(p2, 52, {"default:sandstonebrick"}) ~= nil then return end
 	
 		if math.random(0,10) > 7 then return end	
-	minetest.after(0.3,make,p2)
+		minetest.after(0.8,make,p2)
 	end
 end)

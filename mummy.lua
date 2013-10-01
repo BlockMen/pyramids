@@ -71,7 +71,7 @@ function npc_update_visuals_def(self)
 	self.object:set_properties(prop)
 end
 
-NPC_ENTITY_DEF = {
+MUMMY_DEF = {
 	physical = true,
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
 	visual = "mesh",
@@ -118,13 +118,19 @@ end
 
 spawner_DEF.on_step = function(self, dtime)
 	self.timer = self.timer + 0.01
+	local n = minetest.get_node_or_nil(self.object:getpos())
+	if self.timer > 1 then
+		if n and n.name and n.name ~= "pyramids:spawner_mummy" then
+			self.object:remove()
+		end
+	end
 end
 
 spawner_DEF.on_punch = function(self, hitter)
 
 end
 
-NPC_ENTITY_DEF.on_activate = function(self)
+MUMMY_DEF.on_activate = function(self)
 	npc_update_visuals_def(self)
 	self.anim = get_animations_def()
 	self.object:set_animation({x=self.anim.stand_START,y=self.anim.stand_END}, animation_speed, animation_blend)
@@ -135,7 +141,7 @@ NPC_ENTITY_DEF.on_activate = function(self)
 	self.object:set_armor_groups({fleshy=130})
 end
 
-NPC_ENTITY_DEF.on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
+MUMMY_DEF.on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
 
 	--attack as group
 	--[[for  _,object in ipairs(minetest.env:get_objects_inside_radius(self.object:getpos(), 5)) do
@@ -179,7 +185,7 @@ end
 	local cnt1 = 0
 	local cnt2 = 0
 
-NPC_ENTITY_DEF.on_step = function(self, dtime)
+MUMMY_DEF.on_step = function(self, dtime)
 	self.timer = self.timer + 0.01
 	self.turn_timer = self.turn_timer + 0.01
 	self.jump_timer = self.jump_timer + 0.01
@@ -326,7 +332,7 @@ NPC_ENTITY_DEF.on_step = function(self, dtime)
 	end
 end
 
-minetest.register_entity("pyramids:mummy", NPC_ENTITY_DEF)
+minetest.register_entity("pyramids:mummy", MUMMY_DEF)
 minetest.register_entity("pyramids:mummy_spawner", spawner_DEF)
 
 
