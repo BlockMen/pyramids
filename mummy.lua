@@ -61,7 +61,7 @@ end
 function mummy_update_visuals_def(self)
 	--local name = get_player_name()
 	visual = default_model_def
-	mummy_npc_anim = 0 -- Animation will be set further below immediately
+	npc_anim = 0 -- Animation will be set further below immediately
 	--npc_sneak[name] = false
 	prop = {
 		mesh = mummy_mesh,
