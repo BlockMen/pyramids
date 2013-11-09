@@ -1,16 +1,16 @@
 --pyramids = {}
 
-walk_limit = 1
-chillaxin_speed = 1
-animation_speed = 10
+local mummy_walk_limit = 1
+local mummy_chillaxin_speed = 1
+local mummy_animation_speed = 10
 -- Note: This is currently broken due to a bug in Irrlicht, leave at 0
-animation_blend = 0
+local mummy_animation_blend = 0
 
 -- Default player appearance
-mummy_mesh = "pyramids_mummy.x"
-mummy_texture = {"pyramids_mummy.png"}
-mummy_hp = 20
-mummy_drop = "default:papyrus"
+local mummy_mesh = "pyramids_mummy.x"
+local mummy_texture = {"pyramids_mummy.png"}
+local mummy_hp = 20
+local mummy_drop = "default:papyrus"
 
 local sound_normal = "mummy"
 local sound_hit = "mummy_hurt"
@@ -19,7 +19,7 @@ local sound_dead = "mummy_death"
 local spawner_range = 17
 local spawner_max_mobs = 6
 
-function get_animations_def()
+local function get_animations()
 	return {
 		stand_START = 74,
 		stand_END = 74,
@@ -58,10 +58,10 @@ function hit(self)
 	end)
 end
 
-function npc_update_visuals_def(self)
+function mummy_update_visuals_def(self)
 	--local name = get_player_name()
 	visual = default_model_def
-	npc_anim = 0 -- Animation will be set further below immediately
+	mummy_npc_anim = 0 -- Animation will be set further below immediately
 	--npc_sneak[name] = false
 	prop = {
 		mesh = mummy_mesh,
@@ -109,7 +109,7 @@ spawner_DEF = {
 }
 
 spawner_DEF.on_activate = function(self)
-	npc_update_visuals_def(self)
+	mummy_update_visuals_def(self)
 	self.object:setvelocity({x=0, y=0, z=0})
 	self.object:setacceleration({x=0, y=0, z=0})
 	self.object:set_armor_groups({immortal=1})
@@ -131,9 +131,9 @@ spawner_DEF.on_punch = function(self, hitter)
 end
 
 MUMMY_DEF.on_activate = function(self)
-	npc_update_visuals_def(self)
-	self.anim = get_animations_def()
-	self.object:set_animation({x=self.anim.stand_START,y=self.anim.stand_END}, animation_speed, animation_blend)
+	mummy_update_visuals_def(self)
+	self.anim = get_animations()
+	self.object:set_animation({x=self.anim.stand_START,y=self.anim.stand_END}, mummy_animation_speed, mummy_animation_blend)
 	self.npc_anim = ANIM_STAND
 	self.object:setacceleration({x=0,y=-20,z=0})--20
 	self.state = 1
@@ -168,7 +168,7 @@ MUMMY_DEF.on_punch = function(self, puncher, time_from_last_punch, tool_capabili
 		--self.direction = dir
 			self.direction = {x=self.object:getvelocity().x, y=self.object:getvelocity().y, z=self.object:getvelocity().z}
 			self.punch_timer = 0
-			self.object:setvelocity({x=dir.x*chillaxin_speed,y=5,z=dir.z*chillaxin_speed})--self.object:setvelocity({x=dir.x*4,y=5,z=dir.z*4})
+			self.object:setvelocity({x=dir.x*mummy_chillaxin_speed,y=5,z=dir.z*mummy_chillaxin_speed})--self.object:setvelocity({x=dir.x*4,y=5,z=dir.z*4})
 			if self.state == 1 then
 				self.state = 8
 			elseif self.state >= 2 then
@@ -241,7 +241,7 @@ MUMMY_DEF.on_step = function(self, dtime)
 		if self.punch_timer > 0.15 then
 			--self.direction = {x = math.sin(self.yaw)*-1, y = -20, z = math.cos(self.yaw)}
 			if self.state == 9 then
-				self.object:setvelocity({x=self.direction.x*chillaxin_speed,y=-20,z=self.direction.z*chillaxin_speed})
+				self.object:setvelocity({x=self.direction.x*mummy_chillaxin_speed,y=-20,z=self.direction.z*mummy_chillaxin_speed})
 				self.state = 2
 			elseif self.state == 8 then
 				self.object:setvelocity({x=0,y=-20,z=0})
@@ -278,8 +278,8 @@ MUMMY_DEF.on_step = function(self, dtime)
 		end
 		self.object:setvelocity({x=0,y=self.object:getvelocity().y,z=0})
 		if self.npc_anim ~= ANIM_STAND then
-			self.anim = get_animations_def()
-			self.object:set_animation({x=self.anim.stand_START,y=self.anim.stand_END}, animation_speed, animation_blend)
+			self.anim = get_animations()
+			self.object:set_animation({x=self.anim.stand_START,y=self.anim.stand_END}, mummy_animation_speed, mummy_animation_blend)
 			self.npc_anim = ANIM_STAND
 		end
 		if self.attacker ~= "" then
@@ -291,7 +291,7 @@ MUMMY_DEF.on_step = function(self, dtime)
 	if self.state == 2 then
 
 		if self.direction ~= nil then
-			self.object:setvelocity({x=self.direction.x*chillaxin_speed,y=self.object:getvelocity().y,z=self.direction.z*chillaxin_speed})
+			self.object:setvelocity({x=self.direction.x*mummy_chillaxin_speed,y=self.object:getvelocity().y,z=self.direction.z*mummy_chillaxin_speed})
 		end
 		if self.turn_timer > math.random(1,4) and not self.attacker then
 			self.yaw = 360 * math.random()
@@ -302,8 +302,8 @@ MUMMY_DEF.on_step = function(self, dtime)
 			--self.object:setacceleration(self.direction)
 		end
 		if self.npc_anim ~= ANIM_WALK then
-			self.anim = get_animations_def()
-			self.object:set_animation({x=self.anim.walk_START,y=self.anim.walk_END}, animation_speed, animation_blend)
+			self.anim = get_animations()
+			self.object:set_animation({x=self.anim.walk_START,y=self.anim.walk_END}, mummy_animation_speed, mummy_animation_blend)
 			self.npc_anim = ANIM_WALK
 		end
 		--[[jump
