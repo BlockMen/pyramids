@@ -319,14 +319,16 @@ MUMMY_DEF.on_step = function(self, dtime)
 		if self.attacker ~= "" and minetest.setting_getbool("enable_damage") then
 			local s = self.object:getpos()
 			local p = self.attacker:getpos()
-			local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+			if (s ~= nil and p ~= nil) then
+				local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
 
-			if dist < 2 and self.attacking_timer > 0.6 then
-			self.attacker:punch(self.object, 1.0,  {
-				full_punch_interval=1.0,
-				damage_groups = {fleshy=1}
-			})
-				self.attacking_timer = 0
+				if dist < 2 and self.attacking_timer > 0.6 then
+				self.attacker:punch(self.object, 1.0,  {
+					full_punch_interval=1.0,
+					damage_groups = {fleshy=1}
+				})
+					self.attacking_timer = 0
+				end
 			end
 		end
 	end
