@@ -15,9 +15,11 @@ trap_on_timer = function (pos, elapsed)
 	for i, obj in pairs(objs) do
 		if obj:is_player() then
 			local n = minetest.get_node(pos)
-			if n and n.name and minetest.registered_nodes[n.name].crack < 2 then
-				minetest.set_node(pos, {name="pyramids:trap_2"})
-				nodeupdate(pos)
+			if n and n.name then
+				if minetest.registered_nodes[n.name].crack and minetest.registered_nodes[n.name].crack < 2 then
+					minetest.set_node(pos, {name="pyramids:trap_2"})
+					nodeupdate(pos)
+				end
 			end
 		end
 	end

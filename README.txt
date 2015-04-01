@@ -1,10 +1,10 @@
 Minetest mod "Pyramids"
 =======================
-version: 0.4 Beta
+version: 0.4.1 Beta
 
 License of source code and textures: WTFPL
 ------------------------------------------
-(c) Copyright BlockMen (2013)
+(c) Copyright BlockMen (2013 - 2015)
 
 
 License of mesh model: WTFPL
