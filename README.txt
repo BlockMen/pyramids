@@ -1,6 +1,6 @@
 Minetest mod "Pyramids"
 =======================
-version: 0.4.1 Beta
+version: 0.4.2 Beta
 
 License of source code and textures: WTFPL
 ------------------------------------------

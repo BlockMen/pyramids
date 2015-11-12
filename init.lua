@@ -134,7 +134,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	if noise1 > 0.25 or noise1 < -0.26 then
 	 local mpos = {x=math.random(minp.x,maxp.x), y=math.random(minp.y,maxp.y), z=math.random(minp.z,maxp.z)}
 
-		p2 = minetest.find_node_near(mpos, 25, {"default:desert_sand"})	
+		local p2 = minetest.find_node_near(mpos, 25, {"default:desert_sand"})   
 		while p2 == nil and cnt < 5 do
 			cnt = cnt+1
 			mpos = {x=math.random(minp.x,maxp.x), y=math.random(minp.y,maxp.y), z=math.random(minp.z,maxp.z)}
