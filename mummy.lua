@@ -110,15 +110,15 @@ spawner_DEF = {
 
 spawner_DEF.on_activate = function(self)
 	mummy_update_visuals_def(self)
-	self.object:setvelocity({x=0, y=0, z=0})
-	self.object:setacceleration({x=0, y=0, z=0})
+	self.object:set_velocity({x=0, y=0, z=0})
+	self.object:set_acceleration({x=0, y=0, z=0})
 	self.object:set_armor_groups({immortal=1})
 
 end
 
 spawner_DEF.on_step = function(self, dtime)
 	self.timer = self.timer + 0.01
-	local n = minetest.get_node_or_nil(self.object:getpos())
+	local n = minetest.get_node_or_nil(self.object:get_pos())
 	if self.timer > 1 then
 		if n and n.name and n.name ~= "pyramids:spawner_mummy" then
 			self.object:remove()
@@ -135,7 +135,7 @@ MUMMY_DEF.on_activate = function(self)
 	self.anim = get_animations()
 	self.object:set_animation({x=self.anim.stand_START,y=self.anim.stand_END}, mummy_animation_speed, mummy_animation_blend)
 	self.npc_anim = ANIM_STAND
-	self.object:setacceleration({x=0,y=-20,z=0})--20
+	self.object:set_acceleration({x=0,y=-20,z=0})--20
 	self.state = 1
 	self.object:set_hp(mummy_hp)
 	self.object:set_armor_groups({fleshy=130})
@@ -144,7 +144,7 @@ end
 MUMMY_DEF.on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
 
 	--attack as group
-	--[[for  _,object in ipairs(minetest.env:get_objects_inside_radius(self.object:getpos(), 5)) do
+	--[[for  _,object in ipairs(minetest.get_objects_inside_radius(self.object:get_pos(), 5)) do
 		if not object:is_player() then
 			if object:get_luaentity().name == "peaceful_npc:npc_def" then
 				object:get_luaentity().state = 3
@@ -166,9 +166,9 @@ MUMMY_DEF.on_punch = function(self, puncher, time_from_last_punch, tool_capabili
 			hit(self)
 			--local dir = puncher:get_look_dir()
 		--self.direction = dir
-			self.direction = {x=self.object:getvelocity().x, y=self.object:getvelocity().y, z=self.object:getvelocity().z}
+			self.direction = {x=self.object:get_velocity().x, y=self.object:get_velocity().y, z=self.object:get_velocity().z}
 			self.punch_timer = 0
-			self.object:setvelocity({x=dir.x*mummy_chillaxin_speed,y=5,z=dir.z*mummy_chillaxin_speed})--self.object:setvelocity({x=dir.x*4,y=5,z=dir.z*4})
+			self.object:set_velocity({x=dir.x*mummy_chillaxin_speed,y=5,z=dir.z*mummy_chillaxin_speed})--self.object:set_velocity({x=dir.x*4,y=5,z=dir.z*4})
 			if self.state == 1 then
 				self.state = 8
 			elseif self.state >= 2 then
@@ -178,7 +178,7 @@ MUMMY_DEF.on_punch = function(self, puncher, time_from_last_punch, tool_capabili
 	end
 
 	if self.object:get_hp() == 0 then
-	    local obj = minetest.env:add_item(self.object:getpos(), mummy_drop.." "..math.random(0,3))
+	    local obj = minetest.add_item(self.object:get_pos(), mummy_drop.." "..math.random(0,3))
 	end
 end
 
@@ -193,8 +193,8 @@ MUMMY_DEF.on_step = function(self, dtime)
 	self.attacking_timer = self.attacking_timer + 0.01
 	self.sound_timer = self.sound_timer + 0.01
 
-	local current_pos = self.object:getpos()
-	local current_node = minetest.env:get_node(current_pos)
+	local current_pos = self.object:get_pos()
+	local current_node = minetest.get_node(current_pos)
 	if self.time_passed == nil then
 		self.time_passed = 0
 	end
@@ -241,10 +241,10 @@ MUMMY_DEF.on_step = function(self, dtime)
 		if self.punch_timer > 0.15 then
 			--self.direction = {x = math.sin(self.yaw)*-1, y = -20, z = math.cos(self.yaw)}
 			if self.state == 9 then
-				self.object:setvelocity({x=self.direction.x*mummy_chillaxin_speed,y=-20,z=self.direction.z*mummy_chillaxin_speed})
+				self.object:set_velocity({x=self.direction.x*mummy_chillaxin_speed,y=-20,z=self.direction.z*mummy_chillaxin_speed})
 				self.state = 2
 			elseif self.state == 8 then
-				self.object:setvelocity({x=0,y=-20,z=0})
+				self.object:set_velocity({x=0,y=-20,z=0})
 				self.state = 1
 			end
 		end
@@ -254,29 +254,29 @@ MUMMY_DEF.on_step = function(self, dtime)
 	if self.state == 1 then
 		self.yawwer = true
 		self.attacker = ""
-		for  _,object in ipairs(minetest.env:get_objects_inside_radius(self.object:getpos(), 4)) do
+		for  _,object in ipairs(minetest.get_objects_inside_radius(self.object:get_pos(), 4)) do
 			if object:is_player() then
 				self.yawwer = false
-				local NPC = self.object:getpos()
-				local PLAYER = object:getpos()
+				local NPC = self.object:get_pos()
+				local PLAYER = object:get_pos()
 				self.vec = {x=PLAYER.x-NPC.x, y=PLAYER.y-NPC.y, z=PLAYER.z-NPC.z}
 				self.yaw = math.atan(self.vec.z/self.vec.x)+math.pi^2
 				if PLAYER.x > NPC.x then
 					self.yaw = self.yaw + math.pi
 				end
 				self.yaw = self.yaw - 2
-				self.object:setyaw(self.yaw)
+				self.object:set_yaw(self.yaw)
 				self.attacker = object--:get_player_name()
 			end
 		end
 
 		if self.attacker == "" and self.turn_timer > math.random(1,4) then--and yawwer == true then
 			self.yaw = 360 * math.random()
-			self.object:setyaw(self.yaw)
+			self.object:set_yaw(self.yaw)
 			self.turn_timer = 0
 			self.direction = {x = math.sin(self.yaw)*-1, y = -20, z = math.cos(self.yaw)}
 		end
-		self.object:setvelocity({x=0,y=self.object:getvelocity().y,z=0})
+		self.object:set_velocity({x=0,y=self.object:get_velocity().y,z=0})
 		if self.npc_anim ~= ANIM_STAND then
 			self.anim = get_animations()
 			self.object:set_animation({x=self.anim.stand_START,y=self.anim.stand_END}, mummy_animation_speed, mummy_animation_blend)
@@ -291,15 +291,15 @@ MUMMY_DEF.on_step = function(self, dtime)
 	if self.state == 2 then
 
 		if self.direction ~= nil then
-			self.object:setvelocity({x=self.direction.x*mummy_chillaxin_speed,y=self.object:getvelocity().y,z=self.direction.z*mummy_chillaxin_speed})
+			self.object:set_velocity({x=self.direction.x*mummy_chillaxin_speed,y=self.object:get_velocity().y,z=self.direction.z*mummy_chillaxin_speed})
 		end
 		if self.turn_timer > math.random(1,4) and not self.attacker then
 			self.yaw = 360 * math.random()
-			self.object:setyaw(self.yaw)
+			self.object:set_yaw(self.yaw)
 			self.turn_timer = 0
 			self.direction = {x = math.sin(self.yaw)*-1, y = -20, z = math.cos(self.yaw)}
-			--self.object:setvelocity({x=self.direction.x,y=self.object:getvelocity().y,z=direction.z})
-			--self.object:setacceleration(self.direction)
+			--self.object:set_velocity({x=self.direction.x,y=self.object:get_velocity().y,z=direction.z})
+			--self.object:set_acceleration(self.direction)
 		end
 		if self.npc_anim ~= ANIM_WALK then
 			self.anim = get_animations()
@@ -309,16 +309,16 @@ MUMMY_DEF.on_step = function(self, dtime)
 		--[[jump
 		if self.direction ~= nil then
 			if self.jump_timer > 0.3 then
-				if minetest.env:get_node({x=self.object:getpos().x + self.direction.x,y=self.object:getpos().y-1,z=self.object:getpos().z + self.direction.z}).name ~= "air" then
-					self.object:setvelocity({x=self.object:getvelocity().x,y=5,z=self.object:getvelocity().z})
+				if minetest.get_node({x=self.object:get_pos().x + self.direction.x,y=self.object:get_pos().y-1,z=self.object:get_pos().z + self.direction.z}).name ~= "air" then
+					self.object:set_velocity({x=self.object:get_velocity().x,y=5,z=self.object:get_velocity().z})
 					self.jump_timer = 0
 				end
 			end
 		end]]
 
-		if self.attacker ~= "" and minetest.setting_getbool("enable_damage") then
-			local s = self.object:getpos()
-			local p = self.attacker:getpos()
+		if self.attacker ~= "" and minetest.settings:get_bool("enable_damage") then
+			local s = self.object:get_pos()
+			local p = self.attacker:get_pos()
 			if (s ~= nil and p ~= nil) then
 				local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
 
@@ -347,7 +347,7 @@ minetest.register_craftitem("pyramids:spawn_egg", {
 	stack_max = 99,
 	on_place = function(itemstack, placer, pointed_thing)
 		if pointed_thing.type == "node" then
-			minetest.env:add_entity(pointed_thing.above,"pyramids:mummy")
+			minetest.add_entity(pointed_thing.above,"pyramids:mummy")
 			if not minetest.setting_getbool("creative_mode") then itemstack:take_item() end
 			return itemstack
 		end
@@ -357,7 +357,7 @@ minetest.register_craftitem("pyramids:spawn_egg", {
 
 function pyramids.spawn_mummy (pos, number)
 	for i=0,number do
-		minetest.env:add_entity(pos,"pyramids:mummy")
+		minetest.add_entity(pos,"pyramids:mummy")
 	end
 end
 
@@ -371,19 +371,19 @@ minetest.register_node("pyramids:spawner_mummy", {
 	drop = "",
 	on_construct = function(pos)
 		pos.y = pos.y - 0.28
-		minetest.env:add_entity(pos,"pyramids:mummy_spawner")
+		minetest.add_entity(pos,"pyramids:mummy_spawner")
 	end,
 	on_destruct = function(pos)
-		for  _,obj in ipairs(minetest.env:get_objects_inside_radius(pos, 1)) do
-			if not obj:is_player() then 
+		for  _,obj in ipairs(minetest.get_objects_inside_radius(pos, 1)) do
+			if not obj:is_player() then
 				if obj ~= nil and obj:get_luaentity().m_name == "dummy" then
-					obj:remove()	
+					obj:remove()
 				end
 			end
 		end
 	end
 })
-if not minetest.setting_getbool("only_peaceful_mobs") then
+if not minetest.settings:get_bool("only_peaceful_mobs") then
  minetest.register_abm({
 	nodenames = {"pyramids:spawner_mummy"},
 	interval = 2.0,
@@ -391,9 +391,9 @@ if not minetest.setting_getbool("only_peaceful_mobs") then
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		local player_near = false
 		local mobs = 0
-		for  _,obj in ipairs(minetest.env:get_objects_inside_radius(pos, spawner_range)) do
+		for  _,obj in ipairs(minetest.get_objects_inside_radius(pos, spawner_range)) do
 			if obj:is_player() then
-				player_near = true 
+				player_near = true
 			else
 				if obj:get_luaentity().mob_name == "mummy" then mobs = mobs + 1 end
 			end
@@ -401,11 +401,10 @@ if not minetest.setting_getbool("only_peaceful_mobs") then
 		if player_near then
 			if mobs < spawner_max_mobs then
 				pos.x = pos.x+1
-				local p = minetest.find_node_near(pos, 5, {"air"})	
-				minetest.env:add_entity(p,"pyramids:mummy")
+				local p = minetest.find_node_near(pos, 5, {"air"})
+				minetest.add_entity(p,"pyramids:mummy")
 			end
 		end
 	end
  })
 end
-	
